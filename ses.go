@@ -50,3 +50,33 @@ func (s *SES) Send(to, from, sub, body string) error {
 	_, err := s.svc.SendEmail(input)
 	return err
 }
+
+func (s *SES) SendWithHtml(to, from, sub, html, text string) error {
+	input := &ses.SendEmailInput{
+		Destination: &ses.Destination{
+			ToAddresses: []*string{
+				aws.String(to),
+			},
+		},
+
+		Message: &ses.Message{
+			Body: &ses.Body{
+				Text: &ses.Content{
+					Charset: aws.String("UTF-8"),
+					Data:    aws.String(text),
+				},
+				Html: &ses.Content{
+					Charset: aws.String("UTF-8"),
+					Data:    aws.String(html),
+				},
+			},
+			Subject: &ses.Content{
+				Charset: aws.String("UTF-8"),
+				Data:    aws.String(sub),
+			},
+		},
+		Source: aws.String(from),
+	}
+	_, err := s.svc.SendEmail(input)
+	return err
+}
